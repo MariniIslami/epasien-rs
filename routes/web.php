@@ -4,39 +4,69 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PasienController;
 use App\Http\Controllers\PendaftaranController;
+use App\Http\Controllers\AdminController;
+
+/*
+|--------------------------------------------------------------------------
+| WELCOME
+|--------------------------------------------------------------------------
+*/
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-// LOGIN
-Route::get('/login', [AuthController::class, 'loginForm'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
-Route::get('/register', [AuthController::class, 'registerForm']);
-Route::post('/register', [AuthController::class, 'register']);
-// ================== PASIEN ==================
-Route::middleware('auth')->group(function () {
+/*
+|--------------------------------------------------------------------------
+| AUTH PASIEN
+|--------------------------------------------------------------------------
+*/
+Route::get('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'loginProcess']);
 
-    // Dashboard pasien
-    Route::get('/dashboard', fn() => view('dashboard.pasien'))
-        ->name('dashboard.pasien');
+Route::get('/register', [AuthController::class, 'register']);
+Route::post('/register', [AuthController::class, 'registerProcess']);
 
-    // Data pasien (rekam medis)
-    Route::get('/pasien/data', [PasienController::class, 'create']);
-    Route::post('/pasien/data', [PasienController::class, 'store']);
+Route::get('/logout', [AuthController::class, 'logout']);
 
-    // ================== PENDAFTARAN ==================
-    Route::get('/pendaftaran/step-1', [PendaftaranController::class, 'step1']);
-    Route::post('/pendaftaran/step-1', [PendaftaranController::class, 'storeStep1']);
+/*
+|--------------------------------------------------------------------------
+| PASIEN
+|--------------------------------------------------------------------------
+*/
+Route::get('/dashboard', [PasienController::class, 'dashboard']);
+Route::get('/data-pasien', [PasienController::class, 'formData']);
+Route::post('/data-pasien', [PasienController::class, 'simpanData']);
 
-    Route::get('/pendaftaran/step-2', [PendaftaranController::class, 'step2']);
-    Route::post('/pendaftaran/step-2', [PendaftaranController::class, 'storeStep2']);
+/*
+|--------------------------------------------------------------------------
+| PENDAFTARAN RAWAT JALAN
+|--------------------------------------------------------------------------
+*/
+Route::get('/daftar/step-1', [PendaftaranController::class, 'step1']);
+Route::post('/daftar/step-1', [PendaftaranController::class, 'postStep1']);
 
-    Route::get('/pendaftaran/step-3', [PendaftaranController::class, 'step3']);
-    Route::post('/pendaftaran/step-3', [PendaftaranController::class, 'storeStep3']);
+Route::get('/daftar/step-2', [PendaftaranController::class, 'step2']);
+Route::post('/daftar/step-2', [PendaftaranController::class, 'postStep2']);
 
-    Route::get('/pendaftaran/step-4', [PendaftaranController::class, 'step4']);
-    Route::post('/pendaftaran/step-4', [PendaftaranController::class, 'storeStep4']);
+Route::get('/daftar/step-3', [PendaftaranController::class, 'step3']);
+Route::post('/daftar/step-3', [PendaftaranController::class, 'postStep3']);
 
-    Route::get('/pendaftaran/bukti', [PendaftaranController::class, 'konfirmasi']);
-});
+Route::get('/daftar/step-4', [PendaftaranController::class, 'step4']);
+Route::post('/daftar/step-4', [PendaftaranController::class, 'simpan']);
+
+Route::get('/daftar/bukti', [PendaftaranController::class, 'bukti']);
+
+/*
+|--------------------------------------------------------------------------
+| ADMIN
+|--------------------------------------------------------------------------
+*/
+Route::get('/admin/login', [AdminController::class, 'login']);
+Route::post('/admin/login', [AdminController::class, 'loginProcess']);
+
+Route::get('/admin/dashboard', [AdminController::class, 'dashboard']);
+Route::get('/admin/poli', [AdminController::class, 'poli']);
+Route::get('/admin/dokter', [AdminController::class, 'dokter']);
+Route::get('/admin/pendaftaran', [AdminController::class, 'pendaftaran']);
+Route::get('/admin/laporan', [AdminController::class, 'laporan']);

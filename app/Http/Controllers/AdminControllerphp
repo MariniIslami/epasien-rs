@@ -1,0 +1,43 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+
+class AdminController extends Controller
+{
+    public function login()
+    {
+        return view('auth.admin-login');
+    }
+
+    public function loginProcess(Request $request)
+    {
+        return redirect('/admin/dashboard');
+    }
+
+    public function dashboard()
+    {
+        return view('admin.dashboard');
+    }
+
+    public function poli()
+    {
+        return view('admin.poli');
+    }
+
+    public function dokter()
+    {
+        return view('admin.dokter');
+    }
+
+    public function pendaftaran()
+    {
+        return view('admin.pendaftaran');
+    }
+
+    public function laporan()
+    {
+        return view('admin.laporan');
+    }
+}

@@ -9,42 +9,39 @@ use App\Models\User;
 
 class AuthController extends Controller
 {
-    // TAMPILAN LOGIN
-    public function loginForm()
+    public function login()
     {
         return view('auth.login');
     }
 
-    // PROSES LOGIN
-    public function login(Request $request)
+    public function loginProcess(Request $request)
     {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required'
-        ]);
-
-        $credentials = $request->only('email', 'password');
-
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-
-            if (Auth::user()->role == 'admin') {
-                return redirect('/admin/dashboard');
-            } else {
-                return redirect('/pasien/dashboard');
-            }
+        if (Auth::attempt($request->only('email', 'password'))) {
+            return redirect('/dashboard');
         }
 
         return back()->with('error', 'Email atau password salah');
     }
 
-    // LOGOUT
-    public function logout(Request $request)
+    public function register()
+    {
+        return view('auth.register');
+    }
+
+    public function registerProcess(Request $request)
+    {
+        User::create([
+            'name' => $request->nama,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
+
+        return redirect('/login')->with('success', 'Akun berhasil dibuat');
+    }
+
+    public function logout()
     {
         Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
         return redirect('/login');
     }
 }
