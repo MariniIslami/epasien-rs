@@ -16,7 +16,13 @@ class AuthController extends Controller
 
     public function loginProcess(Request $request)
     {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
         if (Auth::attempt($request->only('email', 'password'))) {
+            $request->session()->regenerate();
             return redirect('/dashboard');
         }
 
@@ -30,13 +36,19 @@ class AuthController extends Controller
 
     public function registerProcess(Request $request)
     {
+        $request->validate([
+            'nama' => 'required|string|max:100',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:6|confirmed',
+        ]);
+
         User::create([
             'name' => $request->nama,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
 
-        return redirect('/login')->with('success', 'Akun berhasil dibuat');
+        return redirect('/login')->with('success', 'Akun berhasil dibuat, silakan login');
     }
 
     public function logout()
